@@ -1,11 +1,10 @@
 from django.db import models
 
 class Owner(models.Model):
-    fname = models.CharField(max_length=100)
-    lname = models.CharField(max_length=100)
+    name = models.CharField(max_length=100)
 
     def __str__(self) -> str:
-        return self.fname + ' ' + self.lname
+        return self.name
 
 
 class Actor(models.Model):
@@ -27,10 +26,9 @@ class Movie(models.Model):
         return self.title
     
 
-def create_owner(fname, lname):
+def create_owner(name):
     owner = Owner(
-        fname = fname,
-        lname = lname
+        name = name
     )
     owner.save()
     return owner
@@ -46,12 +44,12 @@ def create_actor(name, hometown, birthday):
     return actor
 
 
-def create_movie(title, actor, release_date, owner):
-    movie_name = Movie(
+def create_movie(title, release_date, owner, actors):
+    movie = Movie.objects.create(
         title = title,
-        actor = actor,
         release_date = release_date,
         owner = owner
     )
-    movie_name.save()
-    return movie_name
+    movie.actor.add(*actors)
+    movie.save()
+    return movie
